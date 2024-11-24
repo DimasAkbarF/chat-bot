@@ -1,0 +1,346 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+:root {
+  --text-color: #f8f9fa;
+  --background-color: #0a192f;
+  --primary-color: #64ffda;
+  --secondary-color: #112240;
+  --input-background: #1e2d3d;
+  --button-background: #64ffda;
+  --button-hover: #4ad8b9;
+  --chat-gradient: linear-gradient(145deg, #112240, #1e2d3d);
+}
+
+body {
+  background: var(--background-color);
+  color: var(--text-color);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  background-image: radial-gradient(circle at center, #112240 0%, #0a192f 100%);
+  margin: 0;
+  animation: fadeInBody 1s ease-out;
+}
+
+/* Fade-in effect for body */
+@keyframes fadeInBody {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Remove border and make it full-screen */
+.chat-wrapper {
+  background: var(--secondary-color);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+  animation: slideInFromLeft 0.6s ease-out;
+}
+
+/* Slide-in effect for chat wrapper */
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Header section styling */
+.header {
+  background: var(--chat-gradient);
+  padding: 1.5rem;
+  text-align: center;
+  animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.header .title {
+  color: var(--primary-color);
+  font-size: 2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 15px rgba(100, 255, 218, 0.5);
+}
+
+/* Chat container */
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  overflow: hidden;
+  background: rgba(30, 45, 61, 0.4);
+}
+
+/* Chat list */
+.chat-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-right: 10px;
+}
+
+.chat-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-list::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
+}
+
+/* Welcome message styling */
+.welcome-message {
+  text-align: center;
+  margin: 2rem auto;
+  max-width: 90%;
+  padding: 2rem;
+  background: var(--chat-gradient);
+  border-radius: 15px;
+  animation: welcomeFadeIn 1s ease-out, scaleUp 0.5s ease-out;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes scaleUp {
+  from {
+    transform: scale(0.9);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.welcome-title {
+  color: var(--primary-color);
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 15px rgba(100, 255, 218, 0.3);
+}
+
+.welcome-subtitle {
+  color: var(--text-color);
+  font-size: 1rem;
+  line-height: 1.6;
+  opacity: 0.9;
+}
+
+@keyframes welcomeFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#particles-js {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: -1;
+}
+
+/* Message styling */
+.message {
+  padding: 1rem 1.5rem;
+  border-radius: 15px;
+  background: var(--input-background);
+  position: relative;
+  max-width: 70%;
+  margin: 0.5rem 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  animation: fadeInMessage 0.5s ease-in-out;
+}
+
+@keyframes fadeInMessage {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message.outgoing {
+  align-self: flex-end;
+  background: linear-gradient(135deg, var(--primary-color), #4ad8b9);
+  color: #0a192f;
+  animation: fadeInRight 0.5s ease-out;
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.message.incoming {
+  align-self: flex-start;
+  background: var(--chat-gradient);
+  animation: fadeInLeft 0.5s ease-out;
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Typing area styling */
+.typing-area {
+  background: var(--input-background);
+  padding: 1rem;
+  margin: 1rem;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.typing-form {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.typing-input {
+  flex-grow: 1;
+  border: none;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  background: var(--secondary-color);
+  color: var(--text-color);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.typing-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.typing-input::placeholder {
+  color: rgba(248, 249, 250, 0.5);
+}
+
+/* Send button with hover effect */
+.send-button {
+  border: none;
+  background: var(--button-background);
+  color: var(--background-color);
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  animation: pulseButton 1.5s ease-out infinite;
+}
+
+@keyframes pulseButton {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.send-button:hover {
+  background: var(--button-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(100, 255, 218, 0.3);
+}
+
+.send-button:active {
+  transform: translateY(0);
+}
+
+/* File message styles */
+.file-message img {
+  max-width: 100px;
+  max-height: 100px;
+  margin: 10px 0;
+}
+
+.file-message p {
+  font-size: 14px;
+  color: #bbb;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .chat-wrapper {
+    padding: 1rem;
+  }
+
+  .header .title {
+    font-size: 1.5rem;
+  }
+
+  .typing-input {
+    font-size: 0.9rem;
+  }
+
+  .send-button {
+    font-size: 0.9rem;
+  }
+
+  .welcome-title {
+    font-size: 1.5rem;
+  }
+
+  .welcome-subtitle {
+    font-size: 0.9rem;
+  }
+}
