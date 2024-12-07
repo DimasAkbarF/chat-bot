@@ -5,42 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dim AI</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
     <style>
         :root {
-            --primary-color: #10a37f;
-            --bg-color: #343541;
-            --chat-bg: #444654;
+            --primary-gradient: linear-gradient(160deg, #0093E9 0%, #80D0C7 100%);
+            --chat-gradient: linear-gradient(to right, #232526, #414345);
             --text-color: #ececf1;
-            --input-bg: #40414f;
-            --border-color: #565869;
+            --input-bg: rgba(255, 255, 255, 0.05);
+            --message-bg: rgba(255, 255, 255, 0.05);
+            --hover-color: rgba(255, 255, 255, 0.1);
         }
 
         body {
-            background-color: var(--bg-color);
+            background: var(--chat-gradient);
             color: var(--text-color);
-            font-family: 'Söhne', ui-sans-serif, system-ui, -apple-system;
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
         }
 
         .chat-wrapper {
+            position: relative;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            width: 90%;
+            max-width: 1200px;
+            height: 90vh;
+            margin: 5vh auto;
             display: flex;
             flex-direction: column;
-            height: 100vh;
-            max-width: 1000px;
-            margin: 0 auto;
-            background-color: var(--bg-color);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.5s ease-out;
         }
 
         .header {
-            padding: 1rem;
-            border-bottom: 1px solid var(--border-color);
-            background-color: var(--bg-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            background: var(--primary-gradient);
+            padding: 1.5rem;
+            border-radius: 20px 20px 0 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0;
+            background: linear-gradient(to right, #fff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 2s infinite linear;
         }
 
         .chat-container {
@@ -48,216 +71,171 @@
             overflow-y: auto;
             padding: 2rem;
             scroll-behavior: smooth;
+            background: rgba(0, 0, 0, 0.2);
         }
 
-        .message {
-            display: flex;
-            padding: 1.5rem;
+        .chat-list {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        .welcome-message {
+            background: var(--message-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transform: translateY(20px);
+            animation: slideUp 0.5s ease-out forwards;
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin-bottom: 1rem;
-            border-radius: 0.5rem;
         }
 
-        .user-message {
-            background-color: var(--bg-color);
-        }
-
-        .ai-message {
-            background-color: var(--chat-bg);
-        }
-
-        .avatar {
-            width: 30px;
-            height: 30px;
-            border-radius: 0.2rem;
-            margin-right: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--primary-color);
-            color: white;
-            font-weight: bold;
-        }
-
-        .message-content {
-            flex: 1;
+        .welcome-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
             line-height: 1.6;
         }
 
         .typing-area {
             padding: 1.5rem;
-            background-color: var(--bg-color);
-            border-top: 1px solid var(--border-color);
-            position: sticky;
-            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 0 0 20px 20px;
         }
 
         .typing-form {
-            max-width: 768px;
+            max-width: 850px;
             margin: 0 auto;
             position: relative;
         }
 
         .typing-input {
-            background-color: var(--input-bg);
-            border: 1px solid var(--border-color);
+            background: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             color: var(--text-color);
-            padding: 1rem;
-            padding-right: 4rem;
-            border-radius: 0.5rem;
-            width: 100%;
-            resize: none;
-            min-height: 52px;
-            max-height: 200px;
-            line-height: 1.5;
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            transition: all 0.3s ease;
         }
 
         .typing-input:focus {
             outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 2px rgba(16, 163, 127, 0.2);
+            border-color: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(0, 147, 233, 0.2);
         }
 
         .send-button {
-            position: absolute;
-            right: 0.8rem;
-            bottom: 0.8rem;
-            background-color: var(--primary-color);
+            background: var(--primary-gradient);
             border: none;
-            border-radius: 0.4rem;
-            padding: 0.4rem 0.8rem;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.2s;
+            border-radius: 12px;
+            padding: 0.8rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
         }
 
         .send-button:hover {
-            background-color: #0e8e6d;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 147, 233, 0.3);
         }
 
-        .welcome-message {
-            text-align: center;
-            max-width: 600px;
-            margin: 2rem auto;
-            background-color: var(--chat-bg);
-            padding: 2rem;
-            border-radius: 0.8rem;
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
 
-        .welcome-title {
-            color: var(--primary-color);
-            font-size: 1.8rem;
-            margin-bottom: 1rem;
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .welcome-subtitle {
-            color: var(--text-color);
-            font-size: 1.1rem;
-            opacity: 0.9;
+        @keyframes shimmer {
+            0% {
+                background-position: -200% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        /* Scrollbar Styling */
+        .chat-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .chat-container::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-container::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient);
+            border-radius: 10px;
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
             .chat-wrapper {
+                width: 100%;
                 height: 100vh;
-            }
-            
-            .chat-container {
-                padding: 1rem;
+                margin: 0;
+                border-radius: 0;
             }
 
-            .message {
-                padding: 1rem;
+            .header {
+                border-radius: 0;
             }
 
             .typing-area {
-                padding: 1rem;
+                border-radius: 0;
+            }
+
+            .welcome-title {
+                font-size: 2rem;
             }
         }
     </style>
 </head>
 <body>
-    <div class="chat-wrapper">
-        <header class="header">
-            <h1 class="text-center fs-4 m-0">Dim AI</h1>
-        </header>
+    <div id="particles-js"></div>
+    <div class="container-fluid d-flex justify-content-center align-items-center vh-100">
+        <div class="chat-wrapper">
+            <header class="header text-center py-3">
+                <h1 class="title">Dim AI</h1>
+            </header>
 
-        <div class="chat-container">
-            <div class="welcome-message">
-                <h2 class="welcome-title">Welcome to Dim AI</h2>
-                <p class="welcome-subtitle">I'm your personal AI assistant. Feel free to ask me anything.<br><span class="text-primary">credit@RiProg</span></p>
-            </div>
-
-            <div class="message ai-message">
-                <div class="avatar">AI</div>
-                <div class="message-content">
-                    How can I help you today?
+            <div class="chat-container p-3">
+                <div class="chat-list">
+                    <div class="welcome-message p-4 mb-3 text-center rounded-3 shadow-sm">
+                        <h2 class="welcome-title">Welcome to Dim AI</h2>
+                        <p class="welcome-subtitle">I'm your personal AI assistant. Feel free to ask me anything, <span class="text-primary fw-bold">credit@RiProg</span></p>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="typing-area">
-            <form class="typing-form">
-                <textarea class="typing-input" placeholder="Type a message..." rows="1"></textarea>
-                <button type="submit" class="send-button">
-                    <svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg">
-                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                    </svg>
-                </button>
-            </form>
+            <div class="typing-area mt-4 p-3">
+                <form action="#" class="typing-form d-flex gap-2">
+                    <input type="text" placeholder="Type a message..." class="typing-input form-control" required />
+                    <button type="submit" class="send-button btn btn-primary px-4 py-2">Send</button>
+                </form>
+            </div>
         </div>
     </div>
 
-    <script>
-        // Auto-resize textarea
-        const textarea = document.querySelector('.typing-input');
-        textarea.addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = this.scrollHeight + 'px';
-        });
-
-        // Handle form submission
-        const form = document.querySelector('.typing-form');
-        const chatContainer = document.querySelector('.chat-container');
-
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const message = textarea.value.trim();
-            
-            if (message) {
-                // Add user message
-                addMessage(message, 'user');
-                
-                // Add AI response (simulated)
-                setTimeout(() => {
-                    addMessage('This is a sample response from Dim AI.', 'ai');
-                }, 1000);
-
-                // Clear input
-                textarea.value = '';
-                textarea.style.height = 'auto';
-            }
-        });
-
-        function addMessage(content, type) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}-message`;
-            
-            const avatar = document.createElement('div');
-            avatar.className = 'avatar';
-            avatar.textContent = type === 'user' ? 'U' : 'AI';
-
-            const messageContent = document.createElement('div');
-            messageContent.className = 'message-content';
-            messageContent.textContent = content;
-
-            messageDiv.appendChild(avatar);
-            messageDiv.appendChild(messageContent);
-            chatContainer.appendChild(messageDiv);
-
-            // Scroll to bottom
-            chatContainer.scrollTop = chatContainer.scrollHeight;
-        }
-    </script>
+    <script src="js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap.bundle.min.js" defer></script>
 </body>
 </html>
